@@ -13,21 +13,16 @@ import java.util.Date;
 
 public class CalculatePrime {
     public static void main(String[] args) {
-        //1. get starting number and set ending number
-        //2. load whole primeFile into primeArray..... 
-        //      prolly need to change to read from file directly in the future...
-        //2. calculate prime and save into array
-        //3. append primearray into file
 
         /* X. Set start time for benchmark */
         long startTime = System.currentTimeMillis();
 
-        /* X. Get dates */
+        /* X. Get dates for files name */
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
         Date now = new Date();
         String currentDateTime = formatter.format(now);
                 
-
+        /* X. Set file paths for primelist.txt */
         String fileDirectory = "/home/pokish86/Data1/Coding/java/pok/prime/";
         String fileName = fileDirectory + "primelist.txt";
         File primeFile = new File(fileName);
@@ -44,7 +39,7 @@ public class CalculatePrime {
             while (s.hasNext()) {primeArray.add(Long.parseLong(s.next()));}
         } catch (FileNotFoundException e) {e.printStackTrace();}
 
-        // 3. rename and move to folder
+        /* 3. rename original primelist.txt and move to folder pastPrimeList */
         String newFileName = fileDirectory + "pastPrimeList/primelist-" + currentDateTime + ".txt";
         Path result = null;
         try {
@@ -54,7 +49,7 @@ public class CalculatePrime {
             System.out.println(result);
         }
 
-        // 4. create new file
+        /* 4. create new file primelist.txt to store all prime numbers */
         try {
             File newFile = new File(fileName);
             newFile.createNewFile();
@@ -63,14 +58,6 @@ public class CalculatePrime {
         }
 
         /* 3. Calculateprime and add into array --------------------------- */
-        // ArrayList<Long> tempArray = new ArrayList<Long>();
-        // for (long i = startNumber; i <= endNumber; i++) {
-        //     if (checkIfPrime(i, primeArray)) {
-        //         System.out.print(".");
-        //         primeArray.add(i);
-        //         // tempArray.add(i);
-        //     }
-        // }
         for (long i = startNumber; i <= endNumber; i++) {
             long calRange = i / 2l;
             boolean notPrime = false;
@@ -99,7 +86,7 @@ public class CalculatePrime {
             }
         }
 
-        /* X. write to log */
+        /* X. get program run time */
         long endTime = System.currentTimeMillis();
         double totalRuntime = (double)(endTime - startTime) / 1000;
         System.out.println(totalRuntime);
@@ -108,6 +95,7 @@ public class CalculatePrime {
     }
 
 
+    /* This method get the last number from primelist.txt */
     static Long getLastNumber(File file) {
         RandomAccessFile fileHandler = null;
         StringBuilder sb = new StringBuilder();
