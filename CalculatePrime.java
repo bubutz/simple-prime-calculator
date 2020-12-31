@@ -8,8 +8,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Date;
 
 public class CalculatePrime {
     public static void main(String[] args) {
@@ -19,14 +21,20 @@ public class CalculatePrime {
         //2. calculate prime and save into array
         //3. append primearray into file
 
-        
+        /* X. Set start time for benchmark */
         long startTime = System.currentTimeMillis();
 
+        /* X. Get dates */
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        Date now = new Date();
+        String currentDateTime = formatter.format(now);
+                
 
+        String fileDirectory = "/home/pokish86/Data1/Coding/java/pok/prime/";
+        String fileName = fileDirectory + "primelist.txt";
+        File primeFile = new File(fileName);
 
         /* 1. getLastNumber from primeFile then set startNumber ----------- */
-        String primeFileLocation = "/home/pokish86/Data1/Documents/primelist.txt";
-        File primeFile = new File(primeFileLocation);
         long lastNumber = getLastNumber(primeFile);
         long calcRange = 100l;
         long startNumber = (lastNumber / calcRange + 1) * calcRange + 1;
@@ -38,40 +46,69 @@ public class CalculatePrime {
             while (s.hasNext()) {primeArray.add(Long.parseLong(s.next()));}
         } catch (FileNotFoundException e) {e.printStackTrace();}
 
-        /* X. Write logs to primeLog */
-        // write start time to primeLog
-        // write primeArray.size() to primeLog
-        // write startNumber and endNumber to primeLog
-        // String primeFileLog = "/home/pokish86/Data1/Documents/primeRunLog.txt";
-        // File primeLog = new File(primeFileLog);
+        // 3. rename and move to folder
+        String newFileName = fileDirectory + "pastPrimeList/primelist-" + currentDateTime + ".txt";
+        Path result = null;
+        try {
+            result = Files.move(Paths.get(fileName), Paths.get(newFileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println(result);
+        }
+
+        // 4. create new file
+        try {
+            File newFile = new File(fileName);
+            newFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         /* 3. Calculateprime and add into array --------------------------- */
-        ArrayList<Long> tempArray = new ArrayList<Long>();
+        // ArrayList<Long> tempArray = new ArrayList<Long>();
+        // for (long i = startNumber; i <= endNumber; i++) {
+        //     if (checkIfPrime(i, primeArray)) {
+        //         System.out.print(".");
+        //         primeArray.add(i);
+        //         // tempArray.add(i);
+        //     }
+        // }
         for (long i = startNumber; i <= endNumber; i++) {
-            if (checkIfPrime(i, primeArray)) {
-                System.out.print(".");
+            long calRange = i / 2l;
+            boolean notPrime = false;
+            for (int j = 0; primeArray.get(j) <= calRange; i++) {
+                if (i % primeArray.get(j) == 0) {
+                    notPrime = true;
+                    break;
+                }
+            }
+            if (notPrime) {
+                continue;
+            } else {
                 primeArray.add(i);
-                tempArray.add(i);
             }
         }
         // write tempArray.size() to primeLog
 
-        /* 4. Append tempArray into primeFile ----------------------------- */
-        for (int i = 0; i < tempArray.size(); i++) {
+        /* 4. Append primeArray into primeFile ----------------------------- */
+        for (int i = 0; i < primeArray.size(); i++) {
+            Path path = Paths.get(fileName);
+            String str = String.valueOf(primeArray.get(i)) + "\n";
             try {
-                appendToFile((String.valueOf(tempArray.get(i)) + "\n"),primeFileLocation);
+                Files.write(path, str.getBytes(), StandardOpenOption.APPEND);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        /* 0. write to log */
+        /* X. write to log */
         long endTime = System.currentTimeMillis();
         double totalRuntime = (double)(endTime - startTime) / 1000;
         System.out.println(totalRuntime);
         // write totalRuntime to primeLog
 
     }
+
 
     static Long getLastNumber(File file) {
         RandomAccessFile fileHandler = null;
@@ -110,18 +147,5 @@ public class CalculatePrime {
             }
         }
         return null;
-    }
-
-    static boolean checkIfPrime (long num, ArrayList<Long> arr) {
-        long calRange = num / 2;
-        for (int i = 0; arr.get(i) <= calRange; i++) {
-            if (num % arr.get(i) == 0) return false;
-        }
-        return true;
-    }
-
-    static void appendToFile(String numToAppend, String filePath) throws IOException {
-        Path path = Paths.get(filePath);
-        Files.write(path, numToAppend.getBytes(), StandardOpenOption.APPEND);
     }
 }
