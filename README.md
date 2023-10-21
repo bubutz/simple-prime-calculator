@@ -1,3 +1,7 @@
-# simple-java-prime-calculator
+# Descriptions
 
-Use java to calculate prime.
+Writing prime calculator in various language to learn
+- Java
+- Python
+- Go
+- Rust
