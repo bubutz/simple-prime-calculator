@@ -1,1 +1,1 @@
-/home/pokish86/Data1/Coding/rust/projects/prime_cargo/target/debug/prime_cargo: /home/pokish86/Data1/Coding/rust/projects/prime_cargo/src/main.rs
+/Megastore1/Vaults/Pok/code/simple-prime-calculator/rust_prime_calc/target/debug/prime_cargo: /Megastore1/Vaults/Pok/code/simple-prime-calculator/rust_prime_calc/src/main.rs
